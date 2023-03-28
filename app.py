@@ -8,7 +8,10 @@ from prediction import predict
 header = st.container()
 dataset = st.container()
 inputs = st.container()
+modelReq = st.container()
 modelTraining = st.container()
+
+
 
 with header:
     st.title('Iris Classification')
@@ -22,20 +25,32 @@ with dataset:
     st.write(iris.DESCR)
 
 with inputs:
-    st.header('Iris Data Inputs')
-    st.text('Please enter Petal Length and Petal Width in cm: ')
-    #["petal length (cm)", "petal width (cm)"]
-    petal_length = st.slider('Petal length', 1.0, 6.9, 1.3)
-    petal_width = st.slider('Petal width', 0.1, 2.5, 0.2)
+    st.sidebar.header('Iris Data Inputs')
+    st.sidebar.markdown('Please enter Petal Length and Petal Width in cm: ')
+    sepal_length = st.sidebar.slider('Sepal length (cm):', 1.0, 8.0, 4.9)
+    sepal_width = st.sidebar.slider('Sepal width (cm):', 0.1, 5.0, 3.0)
+    petal_length = st.sidebar.slider('Petal length (cm):', 1.0, 8.0, 1.4)
+    petal_width = st.sidebar.slider('Petal width (cm):', 0.1, 5.0, 0.2)
+
+with modelReq:
+    df = pd.DataFrame({
+        'ML models': ['Logistic Regression', 'Decision Trees', 'SVM', 'Voting Classifier']
+    })
+    model_option = st.selectbox(
+        'Select the machine learning model to use:',
+        df['ML models'])
 
     
 with modelTraining:
-    if st.button ('Classify'):
-        data = {'petal length (cm)': petal_length,
+    if st.sidebar.button ('Classify'):
+        data = {'sepal length (cm)': sepal_length,
+                'sepal width (cm)': sepal_width,
+                'petal length (cm)': petal_length,
                 'petal width (cm)': petal_width}
         features = pd.DataFrame(data, index=[0])
-        result = predict(features)
-        iris_class = 'Setosa' if result[0] == 0 else 'Versicolor'
-        #st.header('Iris Flower Classification Type: ')
-        st.text(f'Iris Flower Classification Type:  {iris_class}')
-
+        result_LR, result_SVC, result_DT, result_VC  = predict(features, model_option)
+        iris_class = ['Iris-Setosa', 'Iris-Versicolour', 'Iris-Virginica']
+        st.sidebar.markdown(f'Iris Type by Logistic Regression:  {iris.target_names[result_LR[0]]}')
+        st.sidebar.markdown(f'Iris Type by SVC:  {iris.target_names[result_SVC[0]]}')
+        st.sidebar.markdown(f'Iris Type by Desicion Trees:  {iris.target_names[result_DT[0]]}')
+        st.sidebar.markdown(f'Iris Type by Voting Classifier:  {iris.target_names[result_VC[0]]}')
