@@ -25,8 +25,7 @@ with dataset:
     st.write(iris.DESCR)
 
 with inputs:
-    st.sidebar.header('Iris Data Inputs')
-    st.sidebar.markdown('Please enter Petal Length and Petal Width in cm: ')
+    st.sidebar.header('Iris Flower Classification')
     sepal_length = st.sidebar.slider('Sepal length (cm):', 1.0, 8.0, 4.9)
     sepal_width = st.sidebar.slider('Sepal width (cm):', 0.1, 5.0, 3.0)
     petal_length = st.sidebar.slider('Petal length (cm):', 1.0, 8.0, 1.4)
